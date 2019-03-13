@@ -1,0 +1,44 @@
+{
+  "plugins": ["prettier"],
+  "extends": ["airbnb", "prettier"],
+  "parserOptions": {
+      "ecmaVersion": 2018,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "impliedStrict": true
+      }
+  },
+  "rules": {
+    "no-param-reassign": ["error", { "props": true, "ignorePropertyModificationsFor": ["acc", "req", "res"] }],
+    "no-unused-expressions": "off",
+    "no-plusplus": "off",
+    "class-methods-use-this": "off",
+    "semi": ["error"],
+    "no-restricted-syntax": ["error", "LabeledStatement", "WithStatement"],
+    "max-len": ["warn", 160, { "ignoreStrings": true }],
+    "comma-dangle": ["error", "never"],
+    "import/no-named-as-default-member": "off",
+    "no-prototype-builtins": "off",
+    "no-console": "off",
+    "arrow-body-style": "off",
+    "no-use-before-define": "off",
+    "global-require": "off",
+    "object-shorthand": "off",
+    "func-names": "off",
+    "new-cap": "off",
+    "radix": ["error", "as-needed"]
+  },
+  "globals": {
+    "Promise": true,
+    "assert": true,
+    "chai": true,
+    "it": true,
+    "xit": true,
+    "expect": true,
+    "describe": true,
+    "afterEach": true,
+    "beforeEach": true,
+    "after": true,
+    "before": true
+  }
+}

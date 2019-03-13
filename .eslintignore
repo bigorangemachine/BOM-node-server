@@ -1,0 +1,6 @@
+dist/
+coverage/
+tests/testEnvs.js
+.nyc_output
+*/node_modules/*
+jsdocs/

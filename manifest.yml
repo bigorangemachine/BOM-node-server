@@ -1,0 +1,7 @@
+---
+applications:
+- name: BOM-pcf-app
+  memory: 256M
+  instances: 1
+  command: npm run start
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack

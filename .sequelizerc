@@ -1,0 +1,12 @@
+require('@babel/register'); // child config files can use babel -> use node es6 in this file
+const path = require('path');
+
+const baseMySqlPath = path.resolve('src/sql');
+
+const devMySqlPath = path.resolve('dev/sql');
+module.exports = {
+  'config': path.resolve(baseMySqlPath, 'config.js'),
+  'models-path': path.resolve(baseMySqlPath, 'modelsConfig'),
+  'seeders-path': path.resolve(devMySqlPath, 'seeders'),
+  'migrations-path': path.resolve(devMySqlPath, 'migrations')
+};

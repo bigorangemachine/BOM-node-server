@@ -1,0 +1,7 @@
+{
+  "plugins": [],
+  "recurseDepth": 25,
+  "source": {
+    "excludePattern": "(node_modules|coverage|docs|_cache|dist)"
+  }
+}

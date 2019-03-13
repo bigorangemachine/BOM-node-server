@@ -1,0 +1,13 @@
+dist/
+node_modules/
+_cache/
+.DS_Store
+coverage
+docs
+.env
+.env.*
+!.env.sample
+.nyc_output
+*.log
+yarn.lock
+jsdocs/

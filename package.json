@@ -1,0 +1,129 @@
+{
+  "name": "BOM-node-server",
+  "version": "0.0.1",
+  "description": "Sample Cloud & API Server",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bigorangemachine/BOM-node-server.git"
+  },
+  "author": "bigorangemachine",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/bigorangemachine/BOM-node-server/issues"
+  },
+  "homepage": "https://github.com/bigorangemachine/BOM-node-server#readme",
+  "main": "index.js",
+  "engines": {
+    "npm": ">=6.4",
+    "node": ">=10.14 <11"
+  },
+  "scripts": {
+    "build": "rm -rf dist; babel src --out-dir dist/src --source-maps inline; babel index.js --out-dir dist --source-maps inline",
+    "build:postinstall": "npm run build; babel postinstall.js --out-dir dist --source-maps inline",
+    "start": "node dist/index.js",
+    "dev": "NODE_ENV=local nodemon index.js --exec babel-node --source-maps inline",
+    "dev:debug": "NODE_ENV=local nodemon --inspect-brk index.js --exec babel-node --source-maps inline",
+    "postinstall": "(export NODE_ENV=${NODE_ENV:-local}; ./postinstall.sh)",
+    "teardown": "(export NODE_ENV=${NODE_ENV:-local};  ./uninstall.sh)",
+    "lint": "eslint .",
+    "lint:prod": "npm run lint -- --max-warnings 0",
+    "lint:production": "npm run lint:prod",
+    "db:drop": "sequelize db:seed:undo:all; sequelize db:migrate:undo:all",
+    "db:seed": "sequelize db:seed",
+    "db:debug:seed": "sequelize db:seed --debug",
+    "db:setup:fixture": "npm run db:seed -- --seed dev/sql/seeders/testingFixtures.js",
+    "db:debug:setup:fixture": "npm run db:debug:seed -- --seed dev/sql/seeders/testingFixtures.js",
+    "db:setup:local": "NODE_ENV=local npm run db:migrate; NODE_ENV=local npm run db:setup:fixture",
+    "db:migrate": "sequelize db:migrate",
+    "db:sync:s3": "(export NODE_ENV=${NODE_ENV:-local}; ./syncS3.sh)",
+    "db:sync": "npm run db:sync:s3",
+    "coverage": "npm run test:coverage; open file:///$PWD/coverage/lcov-report/index.html",
+    "docs": "jsdoc . -r -c .jsdocrc -d jsdocs; open file:///$PWD/jsdocs/index.html",
+    "test": "NODE_ENV=test _mocha tests/ --recursive --require @babel/register --require \"./tests/testEnvs.js\"",
+    "test:integration": "NODE_ENV=test _mocha tests-integrated/ --recursive --require @babel/register --require \"./tests/testEnvs.js\"",
+    "test:watch": "npm run test -- --watch --watch-extensions js \"tests/**/*.js\"",
+    "test:coverage": "nyc npm run test",
+    "test:debug": "NODE_ENV=test mocha --inspect-brk tests/ --recursive"
+  },
+  "dependencies": {
+    "JSON": "^1.0.0",
+    "aws-sdk": "^2.409.0",
+    "bcrypt": "^3.0.4",
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
+    "date-fns": "^1.30.1",
+    "dotenv": "^6.0.0",
+    "escape-regexp": "0.0.1",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6",
+    "formidable": "^1.2.1",
+    "md5": "^2.2.1",
+    "multer": "^1.4.1",
+    "mysql2": "^1.6.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "pino": "^5.11.1",
+    "pino-http": "^4.1.0",
+    "querystring": "^0.2.0",
+    "sanitize-html": "^1.18.2",
+    "sequelize": "^4.38.0",
+    "sequelize-cli": "^4.0.0",
+    "shorthash": "0.0.2",
+    "url-parse": "^1.4.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.2.3",
+    "@babel/core": "7.3.3",
+    "@babel/node": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.3.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.3.2",
+    "@babel/plugin-syntax-object-rest-spread": "^7.2.0",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/register": "^7.0.0",
+    "babel-eslint": "10.0.1",
+    "babel-preset-env": "1.7.0"
+  },
+  "optionalDependencies": {
+    "babel-plugin-istanbul": "^5.1.1",
+    "chai": "^4.1.2",
+    "eslint": "^5.14.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-config-strict": "^14.0.0",
+    "eslint-plugin-flowtype": "3.2.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-react": "^7.12.4",
+    "jsdoc": "^3.5.5",
+    "mocha": "^5.2.0",
+    "nock": "^9.4.3",
+    "nodemon": "1.18.10",
+    "nyc": "^13.3.0",
+    "prettier": "^1.16.4",
+    "sinon": "^6.1.4",
+    "sinon-chai": "^3.3.0"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.js"
+    ],
+    "reporter": [
+      "lcov",
+      "json",
+      "text-summary"
+    ],
+    "exclude": [
+      "dist",
+      "tests",
+      "node_modules",
+      "coverage",
+      "jsdocs"
+    ],
+    "sourceMap": true,
+    "instrument": true,
+    "all": true
+  }
+}

@@ -1,0 +1,27 @@
+const ACCESS_LEVEL = {
+  USER: 1,
+  OWNER: 2,
+  ADMIN: 3
+};
+const ACCESS_LEVEL_WEIGHT = {
+  USER: 10,
+  OWNER: 50,
+  ADMIN: 100
+};
+const ACCOUNT_STATUS = {
+  INACTIVE: 1,
+  ACTIVE: 2
+};
+const ACCOUNT_STATUS_WEIGHT = {
+  INACTIVE: -10,
+  ACTIVE: 10
+};
+const USER_LEVELS = {
+  ACCESS_LEVEL,
+  ACCESS_LEVEL_WEIGHT,
+  ACCOUNT_STATUS,
+  ACCOUNT_STATUS_WEIGHT
+};
+
+module.exports = USER_LEVELS;
+module.exports.default = USER_LEVELS;
