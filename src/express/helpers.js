@@ -5,8 +5,11 @@ const { APP_ROOT } = constants;
 
 const helpers = {
   verifyInstance: (self, opts) => {
+    if ((opts.app || opts.httpServer)) {
+      console.warn(`Options 'app' and 'httpServer' was passed into constructor; this is untested`);
+    }
     if (!self.loggingMiddleware && (opts.pino || opts.pinoMiddle)) {
-      console.warn('Option \'loggingMiddleware\' was passed into constructor; option \'pino\' and \'pinoMiddle\' will ignored');
+      console.warn(`Option 'loggingMiddleware' was passed into constructor; option 'pino' and 'pinoMiddle' will ignored`);
     }
     if (typeof self.imageAssetPath !== 'string' || !self.imageAssetPath.endsWith('/') || !self.imageAssetPath.startsWith('/')) {
       console.warn(`Instance property 'imageAssetPath' of '${self.imageAssetPath}' should be a string and start & end with '/'`);

@@ -195,6 +195,8 @@ Use `npx <script>` or `npm run <script>` and replace '<script>' with any of the 
 
   * `test:coverage` Same as base 'test' (above) with a coverage report
 
+  * `test:integrations` Runt the test integration suite. `NODE_ENV` defaults to 'test'
+
 * `coverage` Same as `npm run test:coverage` with coverage report opened in your default browser
 
 # Project Structure

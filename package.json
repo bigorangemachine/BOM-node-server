@@ -40,7 +40,7 @@
     "coverage": "npm run test:coverage; open file:///$PWD/coverage/lcov-report/index.html",
     "docs": "jsdoc . -r -c .jsdocrc -d jsdocs; open file:///$PWD/jsdocs/index.html",
     "test": "NODE_ENV=test _mocha tests/ --recursive --require @babel/register --require \"./tests/testEnvs.js\"",
-    "test:integration": "NODE_ENV=test _mocha tests-integrated/ --recursive --require @babel/register --require \"./tests/testEnvs.js\"",
+    "test:integration": "NODE_ENV=${NODE_ENV:-test} _mocha tests-integrated/ --recursive --require @babel/register --require \"./tests/testEnvs.js\"",
     "test:watch": "npm run test -- --watch --watch-extensions js \"tests/**/*.js\"",
     "test:coverage": "nyc npm run test",
     "test:debug": "NODE_ENV=test mocha --inspect-brk tests/ --recursive"
@@ -82,7 +82,8 @@
     "@babel/preset-env": "^7.3.1",
     "@babel/register": "^7.0.0",
     "babel-eslint": "10.0.1",
-    "babel-preset-env": "1.7.0"
+    "babel-preset-env": "1.7.0",
+    "sinon": "^6.3.5"
   },
   "optionalDependencies": {
     "babel-plugin-istanbul": "^5.1.1",
@@ -103,7 +104,6 @@
     "nodemon": "1.18.10",
     "nyc": "^13.3.0",
     "prettier": "^1.16.4",
-    "sinon": "^6.1.4",
     "sinon-chai": "^3.3.0"
   },
   "nyc": {

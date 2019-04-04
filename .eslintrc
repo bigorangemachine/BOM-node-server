@@ -30,8 +30,10 @@
   },
   "globals": {
     "Promise": true,
+    "AssertionError": true,
     "assert": true,
     "chai": true,
+    "sinon": true,
     "it": true,
     "xit": true,
     "expect": true,

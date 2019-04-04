@@ -6,11 +6,13 @@ import pinoMiddleFactory from 'pino-http';
 import multer from 'multer';
 import sequelize from '../sql/instance';
 import constants from '../constants';
+import chainUtils from '../utils/chainUtils';
 import uploadUtils from '../utils/upload';
 import expressUtils from '../utils/expressUtils';
 import models from '../sql/models';
 import helpers  from './helpers';
 
+const  { chainAsPromise } = chainUtils;
 const {  FILE_CACHES } = constants;
 const { UPLOAD_CACHE_PATH } = FILE_CACHES;
 
@@ -25,6 +27,7 @@ class App {
    * @param {string} opts.awsS3Bucket - AWS S3 Bucket Name (unique ID to AWS)
    * @param {string} opts.s3 - s3 Object override
    * @param {string} opts.app - Express Object override. Defaults to: `express()`
+   * @param {string} opts.httpServer - Express Server Object (Nodejs HTTP) override. Defaults to: `this.app.listen()` return
    * @param {string} opts.port - s3 Object override Defaults to: `process.env.PORT` then to `3000`
    * @param {string} opts.models - Sequelize models overrride Defaults to: `import models from '../sql/models';`
    * @param {string} opts.imageAssetPath - Public facing image asset path prefix
@@ -47,6 +50,7 @@ class App {
     }
 
     this.app = opts.app || express();
+    this.httpServer = opts.httpServer || null;
     this.port = opts.port || process.env.PORT || 3000;
     this.models = opts.models || models;
     this.imageAssetPath = opts.imageAssetPath || '/img/';
@@ -85,28 +89,29 @@ class App {
   // asynconous start
   start() {
     const { app, port, awsS3Bucket, s3 } = this;
-
-    return Promise.all([
+    // fake extension of this & promise
+    return chainAsPromise(this, Promise.all([
       (new Promise((resolve, reject) => {
-        app.listen(port, () => {
-          console.log(`Listening on port ${port}`);
-          resolve({ app, port });
+        this.httpServer = app.listen(port, () => {
+            console.log(`Listening on port ${port}`);
+            resolve({ app, port });
+          })
+          .on('error', reject);
         })
-        .on('error', reject);
-      })),
+      ),
       sequelize.authenticate()
         .then(results => sequelize.query(`SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))`, { raw: true }).then(results))
         .catch((err) => {
           process.env.VERBOSE && console.error('sequelize Could not authenticate', err.message || err.toString());
           throw err;
-      }),
+        }),
       uploadUtils.s3VerifyBucket({ s3, awsS3Bucket })
         .catch((err) => {
           process.env.VERBOSE && console.error('AWS-S3 Could not connect', err.message || err.toString());
           throw err;
         })
     ])
-    .then(([ appResult, mysqlResult, s3Result ]) => ({ appResult, mysqlResult, s3Result }));
+    .then(([ appResult, mysqlResult, s3Result ]) => ({ appResult, mysqlResult, s3Result })));
   }
 
   setup() {
@@ -117,6 +122,30 @@ class App {
       .setupCORSMiddlewares() // keep this the VERY LAST middleware!!!
       .setupRoutes()
       .setupErrorsMiddlewares(); // this must be the VERY LASY ANYTHING!
+  }
+
+  stop() {
+    const { httpServer } = this;
+    const bounceFail = err => err || new Error('Unspecified Failure');
+    // fake extension of promises
+    return chainAsPromise(this, Promise.all([
+        new Promise((resolve, reject) => {
+            httpServer.close(resolve).on('error', reject);
+        })
+          .catch(bounceFail),
+        sequelize.close()
+          .catch(bounceFail)
+      ])
+      .then(([ appResult, mysqlResult ]) => ({ appResult, mysqlResult }))
+      .then(({ appResult, mysqlResult }) => {
+        if (appResult instanceof Error) {
+          throw appResult;
+        }
+        if (mysqlResult instanceof Error) {
+          throw mysqlResult;
+        }
+        return { appResult, mysqlResult };
+      }));
   }
 
   setupRoutes() {

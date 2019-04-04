@@ -8,10 +8,12 @@ setupApp() // setup caches as per postinstall.js
   }))
   .then((res) => {
     const sep = '\n\t';
-    process.env.VERBOSE && console.log(`AppFactory started successfully@${sep}`,
-      `STAMP: ${new Date().toString()}${sep}`,
-      `ISOSTAMP: ${new Date().toISOString()}${sep}`,
-      `MICROTIME: ${new Date().getTime()}`
+    process.env.VERBOSE && console.log('\n',
+      `AppFactory started successfully @${new Date().toISOString()}${sep}`,
+        `STAMP: ${new Date().toString()}${sep}`,
+        `ISOSTAMP: ${new Date().toISOString()}${sep}`,
+        `MICROTIME: ${new Date().getTime()}`,
+      '\n'
     );
     return res;
   })
